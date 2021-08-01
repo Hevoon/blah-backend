@@ -10,7 +10,7 @@ module.exports = (app) => {
     app.use(myDone());
     app.use(history({
         //选定url为index，而非/index
-        index: '/index',
+        index: '/',
         // rewrites: [
         //     {from: /\/$/, to: '/'},
         //     {from: /token$/, to: '/token'}

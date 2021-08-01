@@ -4,7 +4,6 @@ let seq = new Sequelize(mysqlConfig.database, mysqlConfig.username, mysqlConfig.
     host: mysqlConfig.host,
     dialect: mysqlConfig.dialect,
     pool: mysqlConfig.pool,
-    port:mysqlConfig.port
 });
 
 function defineModel(name, attributes,attr) {
