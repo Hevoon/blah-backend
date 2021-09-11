@@ -8,7 +8,7 @@ async function findTopic(target) {
   let res3
   let res4
   try {
-    res1 = await db.seq.query(`select id, name,content,update_time,create_time, category,weights from topic where weights='${target}' and category = '简答题' order by rand() limit 5;`, {
+    res1 = await db.seq.query(`select id, name,content,update_time,create_time, category,weights from topic where weights<='${target}' and category = '简答题' order by rand() limit 5;`, {
       type: Sequelize.QueryTypes.SELECT
     })
     if (!res1) {
