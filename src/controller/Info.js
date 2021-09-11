@@ -5,16 +5,35 @@ const jwt = require('koa-jwt')({ secret });
 
 const model = require('../data/model/topic');
 const Sequelize = require('sequelize');
-const { findTopic } = require('./utils')
+const { findTopic,findFramework } = require('./utils')
 module.exports = {
   //获取题目
   getTopic: async (ctx, next) => {
     try {
-      const target = await model.min('weights')
+      const target1 = await model.min('weights')
+      const target2 = await model.max('weights')
+      const target = target1 + Math.floor((target2 - target1) / 2)
       console.log('sdsd', target)
       const res = await findTopic(target)
       const updateList = res.map((e) => ({ ...e, weights: e.weights + 1, update_time: new Date() }))
-      const result = await model.bulkCreate(updateList, { updateOnDuplicate: true })
+      await model.bulkCreate(updateList, { updateOnDuplicate: true })
+      ctx.response.state = 200;
+      ctx.response.message = 'success';
+      ctx.response.type = 'json';
+      ctx.response.body = res
+    } catch (err) {
+      console.log(err, 'getTopic error')
+    }
+  },
+  //获取框架
+  getFramework: async (ctx, next) => {
+    try {
+      const target1 = await model.min('weights')
+      const target2 = await model.max('weights')
+      const target = target1 + Math.floor((target2 - target1) / 2)
+      const res = await findFramework(target)
+      const updateList = res.map((e) => ({ ...e, weights: e.weights + 1, update_time: new Date() }))
+      await model.bulkCreate(updateList, { updateOnDuplicate: true })
       ctx.response.state = 200;
       ctx.response.message = 'success';
       ctx.response.type = 'json';
@@ -26,7 +45,6 @@ module.exports = {
   //添加题目
   addTopic: async (ctx, next) => {
     let query = ctx.request.body;
-    console.log(ctx.req.body,'---d-s')
     try {
       await model.create({
         name: ctx.req.body.name,

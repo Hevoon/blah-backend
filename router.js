@@ -4,6 +4,7 @@ const multiparty = require('koa2-multiparty');
 const router = Router();
 module.exports = (app) => {
     router.get('/getTopic', homeController.getTopic);
+    router.get('/getFramework', homeController.getFramework);
     // router.get('/getall', homeController.getall);
     router.post('/addTopic', multiparty(), homeController.addTopic);
     // router.post('/login', homeController.login);
