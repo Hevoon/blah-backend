@@ -5,7 +5,7 @@ const jwt = require('koa-jwt')({ secret });
 
 const model = require('../data/model/topic');
 const Sequelize = require('sequelize');
-const { findTopic,findFramework } = require('./utils')
+const { findTopic, findFramework, findAllTopic } = require('./utils')
 module.exports = {
   //获取题目
   getTopic: async (ctx, next) => {
@@ -42,6 +42,23 @@ module.exports = {
       console.log(err, 'getTopic error')
     }
   },
+  //获取全部拇
+  getAllTopic: async (ctx, next) => {
+    try {
+      const now = (ctx.query.current || 1) - 1
+      const search = (ctx.query.search || '')
+      const { res, total } = await findAllTopic(now, search)
+      ctx.response.state = 200;
+      ctx.response.message = 'success';
+      ctx.response.type = 'json';
+      ctx.response.body = {
+        data: res,
+        total
+      }
+    } catch (err) {
+      console.log(err, 'getTopic error')
+    }
+  },
   //添加题目
   addTopic: async (ctx, next) => {
     let query = ctx.request.body;
@@ -62,13 +79,11 @@ module.exports = {
     }
   },
   updateTopic: async (ctx, next) => {
-    let query = ctx.request.body;
-    console.log(ctx.req.body)
     await model.update({
-      title: ctx.req.body.title,
-      region: ctx.req.body.region,
-      time: ctx.req.body.time,
-      desc: ctx.req.body.desc,
+      name: ctx.req.body.name,
+      category: ctx.req.body.category,
+      content: ctx.req.body.content,   
+      update_time: new Date(),
     }, {
       where: {
         id: ctx.req.body.id
@@ -83,8 +98,7 @@ module.exports = {
     })
   },
   deleteTopic: async (ctx, next) => {
-    let query = ctx.request.body;
-    console.log(ctx.req.body)
+    console.log(ctx,ctx.req.body,'ctx')
     await model.destroy({
       where: {
         id: ctx.req.body.id

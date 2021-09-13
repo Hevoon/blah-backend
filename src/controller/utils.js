@@ -63,7 +63,7 @@ async function findTopic(target) {
   }
   console.log(res1, res2, res3, res4)
 
-  return res.concat(res1 || [], res2 || [], res3 || [], res4 || [])
+  return res.concat(res2 || [], res1 || [], res3 || [], res4 || [])
 }
 async function findFramework(target) {
   let res = []
@@ -85,8 +85,26 @@ async function findFramework(target) {
   }
   return res
 }
+async function findAllTopic(current, search) {
+  let res = []
+  let total = 0
+  try {
+    const totalList = await db.seq.query(`select id, name,content,update_time,create_time, category,weights from topic where name like '%${search}%' and category != '框架'`, {
+      type: Sequelize.QueryTypes.SELECT
+    })
+    res = totalList.slice(current * 10, (current + 1) * 10)
+    total = totalList.length || 0
+    if (!res) {
+      res = []
+    }
+  } catch (err) {
+    console.log('err ', err)
+  }
+  return { res, total }
+}
 
 module.exports = {
   findTopic,
-  findFramework
+  findFramework,
+  findAllTopic
 }
