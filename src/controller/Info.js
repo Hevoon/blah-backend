@@ -10,11 +10,14 @@ module.exports = {
   //获取题目
   getTopic: async (ctx, next) => {
     try {
+      const jian = ctx.query.jian || 5
+      const ming = ctx.query.ming || 7
+      const lun = ctx.query.lun || 2
+      const zong = ctx.query.zong || 1
       const target1 = await model.min('weights')
       const target2 = await model.max('weights')
       const target = target1 + Math.floor((target2 - target1) / 2)
-      console.log('sdsd', target)
-      const res = await findTopic(target)
+      const res = await findTopic(target, { jian, ming, lun, zong })
       const updateList = res.map((e) => ({ ...e, weights: e.weights + 1, update_time: new Date() }))
       await model.bulkCreate(updateList, { updateOnDuplicate: true })
       ctx.response.state = 200;
@@ -82,7 +85,7 @@ module.exports = {
     await model.update({
       name: ctx.req.body.name,
       category: ctx.req.body.category,
-      content: ctx.req.body.content,   
+      content: ctx.req.body.content,
       update_time: new Date(),
     }, {
       where: {
@@ -98,7 +101,7 @@ module.exports = {
     })
   },
   deleteTopic: async (ctx, next) => {
-    console.log(ctx,ctx.req.body,'ctx')
+    console.log(ctx, ctx.req.body, 'ctx')
     await model.destroy({
       where: {
         id: ctx.req.body.id
