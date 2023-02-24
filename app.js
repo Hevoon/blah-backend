@@ -7,7 +7,7 @@ middleware(app);
 Router(app);
 
 
-app.listen(3000, () => {
-    console.log('server is running at http://localhost:3000');
+app.listen(3001, () => {
+  console.log('server is running at http://localhost:3001');
 });
 
